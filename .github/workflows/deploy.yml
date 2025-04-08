@@ -3,7 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
-
   workflow_dispatch:
 
 permissions:
@@ -24,12 +23,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        
       - name: Setup Pages
         uses: actions/configure-pages@v3
+        
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .cache
+            public
+          key: ${{ runner.os }}-cache-${{ hashFiles('**/*') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-
+            
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v1
         with:
           path: '.'
+          
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
